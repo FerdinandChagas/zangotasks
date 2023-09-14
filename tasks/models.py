@@ -19,7 +19,7 @@ class Task(models.Model):
 
 class TaskList(models.Model):
     name = models.CharField(max_length=150)
-    tasks = models.ManyToManyField(Task)
+    tasks = models.ManyToManyField(Task, blank=True)
 
     class Meta:
         verbose_name = "Tasks List"
