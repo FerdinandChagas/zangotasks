@@ -1,5 +1,4 @@
 from rest_framework.serializers import ModelSerializer
-
 from tasks.models import Task, TaskList
 
 

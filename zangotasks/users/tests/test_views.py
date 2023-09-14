@@ -11,11 +11,7 @@ from django.urls import reverse
 from zangotasks.users.forms import UserAdminChangeForm
 from zangotasks.users.models import User
 from zangotasks.users.tests.factories import UserFactory
-from zangotasks.users.views import (
-    UserRedirectView,
-    UserUpdateView,
-    user_detail_view,
-)
+from zangotasks.users.views import UserRedirectView, UserUpdateView, user_detail_view
 
 pytestmark = pytest.mark.django_db
 
