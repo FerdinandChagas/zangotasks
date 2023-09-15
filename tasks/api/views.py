@@ -15,3 +15,6 @@ class TaskListViewSet(ModelViewSet):
     serializer_class = TaskListSerializer
     permission_classes = [AllowAny]
     queryset = TaskList.objects.all()
+
+    def add_task(self, request):
+        pass
