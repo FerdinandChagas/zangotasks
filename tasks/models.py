@@ -10,7 +10,7 @@ class Task(models.Model):
     done = models.BooleanField()
 
     class Meta:
-        verbose_name = "Task"
+        verbose_name = "Tasks"
         verbose_name_plural = "Tasks"
 
     def __str__(self):
