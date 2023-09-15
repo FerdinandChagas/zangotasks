@@ -20,7 +20,7 @@ class TasksTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_task_retrieve(self):
-        response = self.client.get(f"/api/tasks/{self.task.pk}/")
+        response = self.client.get(f"/api/task/{self.task.pk}/")
         self.assertEqual(response.status_code, 200)
 
     def test_create_new_task(self):
