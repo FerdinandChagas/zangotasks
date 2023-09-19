@@ -1,5 +1,6 @@
 from typing import Any
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ParseError, PermissionDenied, NotAuthenticated
@@ -37,18 +38,18 @@ class ManagerViewSet(ModelViewSet):
     def create(self, request):
         data = request.data
         try:
-            serializer = ManagerSerializer(data=data)
-            serializer.is_valid(raise_exception=True)
+            group = Group.objects.get(name="Manager")
             new_user = User.objects.create_user(
-                username = serializer.validated_data['username'],
-                password = serializer.validated_data['password'],
-                email = serializer.validated_data['email'],
-                first_name = serializer.validated_data['name'],
+                username = data['username'],
+                password = data['password'],
+                email = data['email'],
+                name = data['name'],
             )
+            new_user.groups.add(group)
             new_user.save()
             new_manager = Manager.objects.create(user=new_user)
             new_manager.save()
-            serializer = UserSerializer(new_manager.user)
+            serializer = ManagerSerializer(new_manager)
             return Response({"Info": "Manager criado!", "data": serializer.data}, status=status.HTTP_201_CREATED)
         except ParseError:
             return Response({"Info": "Falha ao tentar cadastrar manager. Verifique as inforamções e tente novamente!"}, status=status.HTTP_400_BAD_REQUEST)
@@ -64,19 +65,21 @@ class MemberViewSet(ModelViewSet):
     def create(self, request):
         data = request.data
         try:
+            group = Group.objects.get(name="Member")
             new_user = User.objects.create_user(
                 username = data['username'],
                 password = data['password'],
                 email = data['email'],
                 name = data['name'],
             )
+            new_user.groups.add(group)
             new_user.save()
-            new_member = Manager.objects.create(user=new_user)
+            new_member = Member.objects.create(user=new_user)
             new_member.save()
             serializer = MemberSerializer(new_member)
-            return Response({"Info": "Manager criado!", "data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response({"Info": "Member criado!", "data": serializer.data}, status=status.HTTP_201_CREATED)
         except ParseError:
-            return Response({"Info": "Falha ao tentar cadastrar manager. Verifique as inforamções e tente novamente!"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Info": "Falha ao tentar cadastrar member. Verifique as inforamções e tente novamente!"}, status=status.HTTP_400_BAD_REQUEST)
         except PermissionDenied:
             return Response({"Info": "Operação na permitida."}, status=status.HTTP_403_FORBIDDEN)
         except NotAuthenticated:

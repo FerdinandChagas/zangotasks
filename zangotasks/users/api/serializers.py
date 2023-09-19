@@ -16,10 +16,23 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
 class ManagerSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
 
     class Meta:
         model = Manager
-        fields = ["id", "username", "password", "name", "email"]
+        fields = ["id", "username", "name", "email"]
+    
+    def get_username(self, obj):
+        return obj.user.username
+
+    def get_name(self, obj):
+        return obj.user.name
+    
+    def get_email(self, obj):
+        return obj.user.email
+    
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -39,3 +52,4 @@ class MemberSerializer(serializers.ModelSerializer):
     
     def get_email(self, obj):
         return obj.user.email
+    
