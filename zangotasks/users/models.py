@@ -1,4 +1,5 @@
 import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
@@ -35,11 +36,12 @@ class Manager(models.Model):
     class Meta:
         verbose_name = "Manager"
         verbose_name_plural = "Managers"
-    
-    def __str__(self):
-        return self.user.first_name
 
-class Member(models.Model): 
+    def __str__(self):
+        return f"{self.user.first_name}"
+
+
+class Member(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
@@ -48,4 +50,4 @@ class Member(models.Model):
         verbose_name_plural = "Members"
 
     def __str__(self):
-        return self.user.first_name
+        return f"{self.user.first_name}"

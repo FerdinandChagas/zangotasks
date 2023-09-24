@@ -1,6 +1,9 @@
 import uuid
+
 from django.db import models
+
 from zangotasks.users.models import User
+
 # Create your models here.
 
 

@@ -15,27 +15,43 @@ class UserSerializer(serializers.ModelSerializer):
             "url": {"view_name": "api:user-detail", "lookup_field": "username"}
         }
 
+
+class ManagerCreateSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150)
+    password = serializers.CharField(max_length=150)
+    name = serializers.CharField(max_length=150)
+    email = serializers.EmailField()
+
+
 class ManagerSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(max_length=150)
     username = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
 
     class Meta:
         model = Manager
-        fields = ["id", "username", "name", "email"]
-    
+        fields = ["id", "name", "username", "email"]
+
     def get_username(self, obj):
         return obj.user.username
 
     def get_name(self, obj):
         return obj.user.name
-    
+
     def get_email(self, obj):
         return obj.user.email
-    
+
+
+class MemberCreateSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150)
+    password = serializers.CharField(max_length=150)
+    name = serializers.CharField(max_length=150)
+    email = serializers.EmailField()
 
 
 class MemberSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(max_length=150)
     username = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
@@ -46,10 +62,9 @@ class MemberSerializer(serializers.ModelSerializer):
 
     def get_username(self, obj):
         return obj.user.username
-    
+
     def get_name(self, obj):
         return obj.user.name
-    
+
     def get_email(self, obj):
         return obj.user.email
-    
