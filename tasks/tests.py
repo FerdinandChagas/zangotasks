@@ -3,7 +3,6 @@ from rest_framework.test import APITestCase
 from tasks.models import Task
 from tasks.services import TaskService
 from zangotasks.users.models import User
-from zangotasks.users.serivces import ManagerService
 
 # Create your tests here.
 
@@ -11,7 +10,7 @@ from zangotasks.users.serivces import ManagerService
 class TasksTestCase(APITestCase):
     def setUp(self):
         self.service = TaskService()
-        self.user = User.objects.create_user(username="tester", password= "senha123")
+        self.user = User.objects.create_user(username="tester", password="senha123")
 
     def test_create_task(self):
         data = {
