@@ -2,5 +2,5 @@ projectKey=zangotasks
 serverUrl=http://localhost:9000
 serverVersion=9.9.0.65466
 dashboardUrl=http://localhost:9000/dashboard?id=zangotasks
-ceTaskId=AYqWHHN_0q9vkrOqk5GN
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AYqWHHN_0q9vkrOqk5GN
+ceTaskId=AYrMf7n_M4pmHNE3PLgQ
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AYrMf7n_M4pmHNE3PLgQ

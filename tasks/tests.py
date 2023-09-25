@@ -45,7 +45,8 @@ class TasksTestCase(APITestCase):
             "tasklist": self.tasklist.id,
         }
         task = self.task_service.create(data, self.user.user)
-        last_task = Task.objects.all().last()
+        last_task = Task.objects.get(id=task.id)
+        self.assertEqual(task.id, last_task.id)
         self.assertEqual(task.titulo, last_task.titulo)
 
     def test_add_collaborator(self):
