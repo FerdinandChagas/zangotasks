@@ -7,7 +7,7 @@ class TaskService:
         tasklist = None
         try:
             tasklist = TaskList.objects.get(id=data["tasklist"])
-        except TaskList.DoesNotExist:
+        except (TaskList.DoesNotExist, KeyError):
             tasklist = TaskList.objects.create(name="Untitiled", created_by=user)
 
         new_task = Task.objects.create(
