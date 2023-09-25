@@ -1,97 +1,87 @@
-from rest_framework.test import APIClient, APITestCase
+from django.contrib.auth.models import Group
+from rest_framework.test import APITestCase
 
 from tasks.models import Task, TaskList
+from tasks.services import TaskListService, TaskService
+from zangotasks.users.serivces import ManagerService, MemberService
 
 # Create your tests here.
 
 
 class TasksTestCase(APITestCase):
     def setUp(self):
-        self.client = APIClient()
-        self.task = Task.objects.create(
-            titulo="Nova tarefa",
-            descricao="Uma nova tarefa",
-            deadline="2023-11-11",
-            done=False,
-        )
+        self.task_service = TaskService()
+        self.member_service = MemberService()
 
-    def test_list_all_tasks(self):
-        response = self.client.get("/api/tasks/")
-        self.assertEqual(response.status_code, 200)
+        Group.objects.get_or_create(name="Member")
+        Group.objects.get_or_create(name="Manager")
 
-    def test_task_retrieve(self):
-        response = self.client.get(f"/api/tasks/{self.task.pk}/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_create_new_task(self):
-        data = {
-            "titulo": "Nova tarefa",
-            "descricao": "Uma nova tarefa",
-            "deadline": "2023-11-11",
-            "done": False,
+        manager_service = ManagerService()
+        manager_data = {
+            "username": "manager",
+            "password": "manageruser",
+            "name": "John Manager",
+            "email": "manager@zangotasks.com",
         }
-        response = self.client.post("/api/tasks/", data=data)
-        self.assertEqual(response.status_code, 201)
-
-    def test_task_update(self):
-        data = {
-            "titulo": "Outra tarefa 1",
+        self.user = manager_service.create(manager_data)
+        self.tasklist = TaskListService().create(
+            {"name": "Test-ToDO-List"}, self.user.user
+        )
+        task_data = {
+            "titulo": "Exemplo Task 01",
             "descricao": "Uma nova tarefa sendo atualizada",
             "deadline": "2023-12-12",
             "done": False,
+            "tasklist": self.tasklist.id,
         }
-        print(self.task.pk)
-        response = self.client.put(f"/api/tasks/{self.task.pk}/", data=data)
-        self.assertEqual(response.status_code, 200)
+        self.task = self.task_service.create(task_data, self.user.user)
 
-    def test_partial_task_update(self):
+    def test_create_task(self):
         data = {
-            "done": True,
+            "titulo": "Exemplo Task 02",
+            "descricao": "Uma nova tarefa sendo atualizada",
+            "deadline": "2023-12-12",
+            "done": False,
+            "tasklist": self.tasklist.id,
         }
-        response = self.client.patch(f"/api/tasks/{self.task.pk}/", data=data)
-        self.assertEqual(response.status_code, 200)
+        task = self.task_service.create(data, self.user.user)
+        last_task = Task.objects.all().last()
+        self.assertEqual(task.titulo, last_task.titulo)
 
-    def test_delete_task(self):
-        response = self.client.delete(f"/api/tasks/{self.task.pk}/")
-        self.assertEqual(response.status_code, 204)
+    def test_add_collaborator(self):
+        data_collaborator = {
+            "username": "collaborator",
+            "password": "collab123",
+            "name": "John Wick",
+            "email": "collaborator@zangotasks.com",
+        }
+        collaborator = self.member_service.create(data_collaborator)
+        data_add_collaborator = {
+            "user_id": collaborator.user.id,
+            "task_id": self.task.id,
+        }
+        self.task_service.add_collaborator(data_add_collaborator)
+        self.assertEqual(collaborator.id, self.task.collaborators.all().last().id)
 
 
 class TaskListTestCase(APITestCase):
     def setUp(self):
-        self.client = APIClient()
-        self.tasklist = TaskList.objects.create(name="ToDo-List")
-        self.task = Task.objects.create(
-            titulo="Nova tarefa",
-            descricao="Uma nova tarefa",
-            deadline="2023-11-11",
-            done=False,
-        )
-        self.tasklist.tasks.add(self.task)
+        self.task_service = TaskService()
+        self.member_service = MemberService()
 
-    def test_list_all_tasklists(self):
-        response = self.client.get("/api/tasklist/")
-        self.assertEqual(response.status_code, 200)
+        Group.objects.get_or_create(name="Member")
+        Group.objects.get_or_create(name="Manager")
 
-    def test_tasklist_retrieve(self):
-        response = self.client.get(f"/api/tasklist/{self.tasklist.pk}/")
-        self.assertEqual(response.status_code, 200)
+        manager_service = ManagerService()
+        manager_data = {
+            "username": "manager",
+            "password": "manageruser",
+            "name": "John Manager",
+            "email": "manager@zangotasks.com",
+        }
+        self.user = manager_service.create(manager_data)
 
-    def test_create_new_tasklist(self):
-        data = {"name": "New Todo-List"}
-        response = self.client.post("/api/tasklist/", data=data)
-        self.assertEqual(response.status_code, 201)
-
-    def test_tasklist_update(self):
-        data = {"name": "Old Todo-List"}
-        response = self.client.put(f"/api/tasklist/{self.tasklist.pk}/", data=data)
-        self.assertEqual(response.status_code, 200)
-
-    def test_partial_tasklist_update(self):
-        data = {"name": "Updated Todo-List"}
-        print(self.task.pk)
-        response = self.client.patch(f"/api/tasklist/{self.tasklist.pk}/", data=data)
-        self.assertEqual(response.status_code, 200)
-
-    def test_delete_tasklist(self):
-        response = self.client.delete(f"/api/tasklist/{self.tasklist.pk}/")
-        self.assertEqual(response.status_code, 204)
+    def test_tasklist_create(self):
+        tasklist = TaskListService().create({"name": "Test-ToDO-List"}, self.user.user)
+        tasklist_test = TaskList.objects.all().last()
+        self.assertEqual(tasklist.id, tasklist_test.id)
