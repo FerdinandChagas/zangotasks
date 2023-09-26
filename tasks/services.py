@@ -22,12 +22,18 @@ class TaskService:
         return new_task
 
     def add_collaborator(self, data):
-        member = Member.objects.get(user__pk=data["user_id"])
+        member = Member.objects.get(id=data["user_id"])
         task = Task.objects.get(pk=data["task_id"])
         task.collaborators.add(member)
         task.save()
         return task
 
+    def remove_collaborator(self, data):
+        member = Member.objects.get(id=data["user_id"])
+        task = Task.objects.get(pk=data["task_id"])
+        task.collaborators.remove(member)
+        task.save()
+        return task
 
 class TaskListService:
     def create(self, data, user):
