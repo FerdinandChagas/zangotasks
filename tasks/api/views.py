@@ -80,7 +80,7 @@ class TaskViewSet(ModelViewSet):
                 {"Info": "Usuário não autenticado."},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-        
+
     @action(methods=["post"], detail=False, url_path="discollaborate")
     def remove_collaborator(self, request):
         serializer = AddCollaboratorSerializer(data=request.data)

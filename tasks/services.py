@@ -35,6 +35,7 @@ class TaskService:
         task.save()
         return task
 
+
 class TaskListService:
     def create(self, data, user):
         new_tasklist = TaskList.objects.create(

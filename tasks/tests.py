@@ -58,7 +58,7 @@ class TasksTestCase(APITestCase):
         }
         collaborator = self.member_service.create(data_collaborator)
         data_add_collaborator = {
-            "user_id": collaborator.user.id,
+            "user_id": collaborator.id,
             "task_id": self.task.id,
         }
         self.task_service.add_collaborator(data_add_collaborator)

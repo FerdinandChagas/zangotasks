@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from tasks.models import Task, TaskList
-from zangotasks.users.models import Member
 
 
 class TaskCreateSerializer(serializers.Serializer):
