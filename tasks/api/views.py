@@ -32,7 +32,7 @@ class TaskViewSet(ModelViewSet):
             serializer = TaskSerializer(new_task)
 
             return Response(
-                {"Info": "Tafefa criada na lista!", "data": serializer.data},
+                {"Info": "Tafefa criada na lista!!", "data": serializer.data},
                 status=status.HTTP_200_OK,
             )
         except (ParseError, ValueError):
