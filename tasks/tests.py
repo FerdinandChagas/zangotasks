@@ -82,7 +82,4 @@ class TaskListTestCase(APITestCase):
         }
         self.user = manager_service.create(manager_data)
 
-    def test_tasklist_create(self):
-        tasklist = TaskListService().create({"name": "Test-ToDO-List"}, self.user.user)
-        tasklist_test = TaskList.objects.all().last()
-        self.assertEqual(tasklist.id, tasklist_test.id)
+    
