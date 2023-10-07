@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from tasks.models import Task, TaskList
-from zangotasks.users.models import User
 
 
 class TaskCreateSerializer(serializers.Serializer):
@@ -31,5 +30,5 @@ class TaskListSerializer(serializers.ModelSerializer):
 
 
 class AddCollaboratorSerializer(serializers.Serializer):
-    user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    task_id = serializers.PrimaryKeyRelatedField(queryset=Task.objects.all())
+    user_id = serializers.UUIDField()
+    task_id = serializers.UUIDField()

@@ -32,7 +32,7 @@ class TaskViewSet(ModelViewSet):
             serializer = TaskSerializer(new_task)
 
             return Response(
-                {"Info": "Tafefa criada na lista!", "data": serializer.data},
+                {"Info": "Tafefa criada na lista!!", "data": serializer.data},
                 status=status.HTTP_200_OK,
             )
         except (ParseError, ValueError):
@@ -67,7 +67,36 @@ class TaskViewSet(ModelViewSet):
         except (ParseError, ValueError):
             return Response(
                 {
-                    "Info": "Falha ao tentar cadastrar tarefa. Verifique as inforamções e tente novamente!"
+                    "Info": "Falha ao tentar adicionar colaborador. Verifique as inforamções e tente novamente!"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except PermissionDenied:
+            return Response(
+                {"Info": "Operação não permitida."}, status=status.HTTP_403_FORBIDDEN
+            )
+        except NotAuthenticated:
+            return Response(
+                {"Info": "Usuário não autenticado."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+    @action(methods=["post"], detail=False, url_path="discollaborate")
+    def remove_collaborator(self, request):
+        serializer = AddCollaboratorSerializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            task = self.service.remove_collaborator(data=serializer.validated_data)
+            serializer = TaskSerializer(task)
+
+            return Response(
+                {"Info": "Colaborador removido na tarefa!", "data": serializer.data},
+                status=status.HTTP_200_OK,
+            )
+        except (ParseError, ValueError):
+            return Response(
+                {
+                    "Info": "Falha ao tentar remover colaborador. Verifique as inforamções e tente novamente!"
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )

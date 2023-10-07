@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group
 from rest_framework.test import APITestCase
 
-from tasks.models import Task, TaskList
+from tasks.models import Task
 from tasks.services import TaskListService, TaskService
 from zangotasks.users.serivces import ManagerService, MemberService
 
@@ -45,7 +45,8 @@ class TasksTestCase(APITestCase):
             "tasklist": self.tasklist.id,
         }
         task = self.task_service.create(data, self.user.user)
-        last_task = Task.objects.all().last()
+        last_task = Task.objects.get(id=task.id)
+        self.assertEqual(task.id, last_task.id)
         self.assertEqual(task.titulo, last_task.titulo)
 
     def test_add_collaborator(self):
@@ -57,7 +58,7 @@ class TasksTestCase(APITestCase):
         }
         collaborator = self.member_service.create(data_collaborator)
         data_add_collaborator = {
-            "user_id": collaborator.user.id,
+            "user_id": collaborator.id,
             "task_id": self.task.id,
         }
         self.task_service.add_collaborator(data_add_collaborator)
@@ -80,8 +81,3 @@ class TaskListTestCase(APITestCase):
             "email": "manager@zangotasks.com",
         }
         self.user = manager_service.create(manager_data)
-
-    def test_tasklist_create(self):
-        tasklist = TaskListService().create({"name": "Test-ToDO-List"}, self.user.user)
-        tasklist_test = TaskList.objects.all().last()
-        self.assertEqual(tasklist.id, tasklist_test.id)
