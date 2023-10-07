@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group
 from rest_framework.test import APITestCase
 
-from tasks.models import Task, TaskList
+from tasks.models import Task
 from tasks.services import TaskListService, TaskService
 from zangotasks.users.serivces import ManagerService, MemberService
 
@@ -81,5 +81,3 @@ class TaskListTestCase(APITestCase):
             "email": "manager@zangotasks.com",
         }
         self.user = manager_service.create(manager_data)
-
-    
