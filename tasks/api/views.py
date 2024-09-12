@@ -27,7 +27,6 @@ class TaskViewSet(ModelViewSet):
 
         try:
             serializer.is_valid(raise_exception=True)
-            print(serializer.validated_data['titulo'])
             new_task = self.service.create(
                 data=serializer.validated_data, user=request.user
             )
